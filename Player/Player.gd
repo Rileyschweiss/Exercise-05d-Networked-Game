@@ -18,15 +18,18 @@ func _physics_process(_delta):
 	if is_on_floor():
 		velocity.y = 0
 	if velocity != Vector3.ZERO:
+		rpc_unreliable("_set_position", global_transform.origin)
 		velocity = move_and_slide(velocity, Vector3.UP)
 		
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		$Pivot.rotate_x(-event.relative.y * mouse_sensitivity)
 		rotate_y(-event.relative.x * mouse_sensitivity)
+		rpc_unreliable("_set_rotation", rotation.y)
 		$Pivot.rotation.x = clamp($Pivot.rotation.x, -mouse_range, mouse_range)
 
 func die():
+	rpc_unreliable("_die")
 	queue_free()
 
 func get_input():
